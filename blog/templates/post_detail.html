@@ -1,0 +1,71 @@
+{% extends "index.html" %}
+{% block title %}
+ <title>{{ post.title }}</title>
+{% endblock title %}
+
+{% block content %}
+                    <!-- Post content-->
+                    <article >
+                        <!-- Post header-->
+                        <header class="mb-4">
+                            <!-- Post title-->
+                            <h1 class="fw-bolder mb-1">{{post.title}}</h1>
+                            <!-- Post meta content-->
+                            <div class="text-muted mb-2">Posted on {{post.create_at}} by {{post.author}}</div>
+                            <!-- Post categories-->
+                            {% for category in post.category.all  %}
+                            <a class="badge bg-secondary text-decoration-none link-light" href="{% url 'category_related' category.pk %}">{{category.title}}</a>
+                            {% endfor %}
+                        </header>
+                        <!-- Preview image figure-->
+                        {% if post.image  %}
+                        <figure class="mb-4"><img class="img-fluid rounded" src="{{post.image.url}}" alt="..." /></figure>
+                        {% else %}
+                        <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                        {% endif %}
+                        <!-- Post content-->
+                        <section class="mb-5">
+                            <p class="fs-5 mb-4" style="text-align: justify" >{{post.content}} </p>
+                        </section>
+                    </article>
+                    <!-- Comments section-->
+                    <section class="mb-5">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <!-- Comment form-->
+                                {% if user.is_authenticated %}
+                                <div class="card my-4">
+                                    <h5 class="card-header">Leave a Comment:</h5>
+                                    <div class="card-body">
+                                        <form method="POST" action="{% url 'add_comment' object.slug %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="text" rows="3" required></textarea>
+                                                <input type="hidden" name="user_id" value="{{user.id}}">
+                                            </div>
+                                            <button class="btn btn-primary" type="submit">Comment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg btn-block mb-4">
+                                    Sign In for comment.
+                                </a>
+                                {% endif %}
+                                <!-- Single comment-->
+                                {% for comment in post.comments.all %} 
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                                    <div class="ms-3">
+                                        <div class="fw-bold"> {{comment.author}} </div>
+                                             {{ comment.text|linebreaks }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+{% endblock content %}
+{% block search %}
+
+{% endblock search %}

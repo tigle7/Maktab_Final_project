@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+{% block title %}
+<title>Categories</title>
+{% endblock title %}
+    <h1 class="mb-4">Categories <a class="btn btn-primary btn-lg float-right" href="{% url 'category_create'%}">Add category</a> </h1>
+    <table class="table">
+  <thead>
+  </thead>
+    {% for category in categories %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <small class="text-muted">Created on {{ category.create_at|date:"F d, Y" }} by {{category.author}}</small> 
+            </div>
+          <h2><a class="article-title" href="{% url 'category_related' category.pk %}">{{ category.title }}</a>     
+          <a class="btn btn-outline-primary float-right" href="{% url 'category_update' category.id %}">Edit</a>
+          <a class="btn btn-outline-danger float-right mx-2" href="{% url 'category_delete' category.id %}">Delete</a></h2>
+          <hr></div>
+        </article>
+    {% endfor %} 
+{% endblock content %}
+
