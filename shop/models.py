@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class GeneralModel(models.Model):
 
     created_at = models.DateTimeField(
@@ -43,30 +44,6 @@ class Category(GeneralModel):
 
     def __str__(self):
         return self.title
-
-
-class Shop(GeneralModel):
-
-    STATUS_CHOICES = (
-        ('P', 'Pending'),
-        ('C', 'Confirmed'),
-        ('D', 'Deleted')
-    )
-    status = models.CharField(
-        max_length=1,
-        choices=STATUS_CHOICES,
-        default='P'
-    )
-    title = models.CharField(
-        max_length=255
-    )
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f'{self.title} Shop'
 
 
 class Product(GeneralModel):
@@ -113,10 +90,39 @@ class Product(GeneralModel):
     def __str__(self):
         return self.title
 
+
+class Shop(GeneralModel):
+
+    STATUS_CHOICES = (
+        ('P', 'Pending'),
+        ('C', 'Confirmed'),
+        ('D', 'Deleted')
+    )
+    status = models.CharField(
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default='P'
+    )
+    title = models.CharField(
+        max_length=255
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    proucts = models.ManyToManyField(
+        Product,
+        related_name='proucts'
+    )
+
+    def __str__(self):
+        return f'{self.title} Shop'
+
+
 class CartItem(GeneralModel):
 
     cart = models.ForeignKey(
-        'Cart', 
+        'Cart',
         on_delete=models.CASCADE
     )
     product = models.ForeignKey(
