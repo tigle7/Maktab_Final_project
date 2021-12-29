@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'user',
     'blog',
+    'shop',
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'

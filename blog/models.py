@@ -5,12 +5,11 @@ from django.db import models
 from django.db.models.fields import AutoField
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-
 from django.urls import reverse
 from django.utils.text import slugify
 from random import randint
 
+User = get_user_model()
 
 class GeneralModel(models.Model):
 
@@ -36,14 +35,14 @@ class Category(GeneralModel):
     parent = models.ForeignKey(
         "self",
         verbose_name="Category Parent",
-        related_name='category',
+        related_name='post_category',
         on_delete=models.PROTECT,
         null=True,
         blank=True
     )
 
     author = models.ForeignKey(
-        get_user_model(),
+        User,
         verbose_name=_('Category Author'),
         null=True,
         on_delete=models.SET_NULL,
@@ -86,7 +85,7 @@ class Post(GeneralModel):
     tag = models.ManyToManyField(Tag)
 
     author = models.ForeignKey(
-        get_user_model(),
+        User,
         verbose_name=_('Post Author'),
         on_delete=models.CASCADE,
     )
@@ -122,7 +121,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE
     )
     author = models.ForeignKey(
-        get_user_model(),
+        User,
         on_delete=models.CASCADE)
     text = models.TextField()
 
