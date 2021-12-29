@@ -93,13 +93,15 @@ class Product(GeneralModel):
     )
     image = models.ImageField(
         upload_to='uploads',
-        default='images/default.png'
+        default='uploads/default.jpg'
     )
     slug = models.SlugField(
         max_length=255
     )
+    is_available = models.BooleanField(
+        default=True
+    )
     price = models.PositiveBigIntegerField()
-    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = 'Products'
