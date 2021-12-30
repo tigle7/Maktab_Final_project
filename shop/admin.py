@@ -3,7 +3,7 @@ from .models import *
 from django.utils.html import format_html
 # Register your models here.
 
-admin.site.register(Cart)
+# admin.site.register(Cart)
 admin.site.register(CartItem)
 
 @admin.register(Category)
@@ -53,3 +53,18 @@ class ShopAdmin(admin.ModelAdmin):
 class ShopTypeAdmin(admin.ModelAdmin):
     list_display = ('title', 'author')
     prepopulated_fields = {'slug': ('title',)}
+
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    
+    list_display = ('owner', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    actions = ['make_canceled']
+
+
+    @admin.action(description='Make selected Cart as canceled')
+    def make_canceled(self, request, queryset):
+        rows = queryset.update(status='C')
+        self.message_user(request, f'{rows} updated')
