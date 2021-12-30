@@ -32,7 +32,7 @@ class CustomUser(AbstractUser):
         unique=True,
         validators=[phone_number_validator]
     )
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     # objects = CustomUserManager()

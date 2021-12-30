@@ -48,3 +48,8 @@ class ShopAdmin(admin.ModelAdmin):
     def make_confirmed(self, request, queryset):
         rows = queryset.update(status='C')
         self.message_user(request, f'{rows} updated')
+
+@admin.register(ShopType)
+class ShopTypeAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author')
+    prepopulated_fields = {'slug': ('title',)}

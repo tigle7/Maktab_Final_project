@@ -20,6 +20,26 @@ class GeneralModel(models.Model):
     class Meta:
         abstract = True
 
+class ShopType(GeneralModel):
+    
+    title = models.CharField(
+        verbose_name=_("Shop Type Title"),
+        max_length=250
+    )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True
+    )
+    author = models.ForeignKey(
+        User,
+        verbose_name=_('Shop Type Author'),
+        related_name='shop_type_author',
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+
+    def __str__(self):
+        return self.title
 
 class Category(GeneralModel):
 
@@ -51,7 +71,8 @@ class Product(GeneralModel):
     category = models.ForeignKey(
         Category,
         related_name='product_category',
-        on_delete=models.CASCADE
+        null=True,
+        on_delete=models.SET_NULL
     )
     created_by = models.ForeignKey(
         User,
@@ -112,7 +133,13 @@ class Shop(GeneralModel):
     )
     proucts = models.ManyToManyField(
         Product,
-        related_name='proucts'
+        related_name='products'
+    )
+    type = models.ForeignKey(
+        ShopType,
+        related_name='shop_type',
+        null=True,
+        on_delete=models.SET_NULL
     )
 
     def __str__(self):
