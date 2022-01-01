@@ -15,11 +15,12 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'price', 'is_available', 'show_image')
-    list_filter = ('is_available', 'created_at')
-    list_editable = ('price',)
+    list_display = ('show_image', 'title', 'price', 'is_available', 'created_by')
+    list_filter = ('is_available', 'created_at', 'created_by')
+    search_fields = ('title',)
+    list_editable = ('is_available',)
     prepopulated_fields = {'slug': ('title',)}
-    raw_id_fields = ('category',)
+    # raw_id_fields = ('category',)
     actions = ('make_available',)
 
     @admin.display(empty_value='-', description="show image")
@@ -42,7 +43,10 @@ class ShopAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'status', 'owner')
     list_filter = ('status', 'created_at')
+    list_editable = ('status',)
     actions = ['make_confirmed']
+    search_fields = ('title', 'owner')
+    
 
     @admin.action(description='Make selected Shops as confirmed')
     def make_confirmed(self, request, queryset):
@@ -58,9 +62,10 @@ class ShopTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    
+    search_fields = ('owner',)
     list_display = ('owner', 'status', 'created_at')
     list_filter = ('status', 'created_at')
+    list_editable = ('status',)
     actions = ['make_canceled']
 
 

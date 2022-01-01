@@ -82,10 +82,6 @@ class Product(GeneralModel):
     title = models.CharField(
         max_length=255
     )
-    author = models.CharField(
-        max_length=255,
-        default='admin'
-    )
     description = models.TextField(
         blank=True
     )
