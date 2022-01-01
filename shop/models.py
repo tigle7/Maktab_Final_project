@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from .managers import ConfirmedShopManager, AvailableProductManager
 
 User = get_user_model()
 
@@ -103,7 +104,9 @@ class Product(GeneralModel):
 
     # def get_absolute_url(self):
     #     return reverse('store:product_detail', args=[self.slug])
-
+    objects = models.Manager
+    available = AvailableProductManager
+    
     def __str__(self):
         return self.title
 
@@ -137,6 +140,8 @@ class Shop(GeneralModel):
         null=True,
         on_delete=models.SET_NULL
     )
+    objects = models.Manager
+    confirmed = ConfirmedShopManager
 
     def __str__(self):
         return f'{self.title} Shop'

@@ -26,6 +26,7 @@ class CustomUser(AbstractUser):
         'email address',
         unique=True
     )
+    is_seller = models.BooleanField(default=False)
     phone_number = models.CharField(
         max_length=11,
         null=True,
