@@ -75,6 +75,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         # form.instance.image = self.request.FILES['image']
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(PostCreateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 @login_required
 def add_comment(request, slug):
