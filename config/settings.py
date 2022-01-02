@@ -10,7 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,22 +90,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': 'ecommerce',
-
-        'USER': 'postgres',
-
-        'PASSWORD': '1202',
-
-        'HOST': 'localhost',
-
-        'PORT': '5432',
-
+        'NAME': os.environ.get('DATABASE_POSTGRES_NAME'),
+        'USER': os.environ.get('DATABASE_POSTGRES_USER'),
+        'PASSWORD': os.environ.get('DATABASE_POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_POSTGRES_HOST'),
+        'PORT': os.environ.get('DATABASE_POSTGRES_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

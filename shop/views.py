@@ -17,7 +17,12 @@ class ShopListView(ListView):
     context_object_name = 'shops'
 
     def get_queryset(self):
-        # user = get_object_or_404(
-        #     get_user_model(), username=self.kwargs.get('username'))
-        # print(self.request.user)
         return Shop.confirmed.filter(owner=self.request.user).order_by('-created_at')
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'shop_dashboard.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.available.filter(owner=self.request.user).order_by('-created_at')

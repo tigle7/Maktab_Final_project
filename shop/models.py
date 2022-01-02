@@ -75,7 +75,7 @@ class Product(GeneralModel):
         null=True,
         on_delete=models.SET_NULL
     )
-    created_by = models.ForeignKey(
+    owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='product_creator'
