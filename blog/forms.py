@@ -12,7 +12,10 @@ class PostForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
         }
-
+    def __init__(self, *args, **kwargs):
+       user = kwargs.pop('user')
+       super(PostForm, self).__init__(*args, **kwargs)
+       self.fields['category'].queryset = Category.objects.filter(author=user)
 
 class CategoryForm(forms.ModelForm):
     class Meta:

@@ -83,9 +83,7 @@ class Product(GeneralModel):
     title = models.CharField(
         max_length=255
     )
-    description = models.TextField(
-        blank=True
-    )
+    description = models.TextField()
     image = models.ImageField(
         upload_to='uploads',
         default='uploads/default.jpg'
@@ -96,6 +94,10 @@ class Product(GeneralModel):
     is_available = models.BooleanField(
         default=True
     )
+    # shop = models.ForeignKey('Shop',
+    # on_delete=models.CASCADE,
+    # null=True,
+    # related_name='product_shop')
     price = models.PositiveBigIntegerField()
 
     class Meta:
@@ -140,8 +142,12 @@ class Shop(GeneralModel):
         null=True,
         on_delete=models.SET_NULL
     )
-    objects = models.Manager
-    confirmed = ConfirmedShopManager
+    image = models.ImageField(
+        upload_to='uploads',
+        default='uploads/default.jpg'
+    )
+    objects = models.Manager()
+    confirmed = ConfirmedShopManager()
 
     def __str__(self):
         return f'{self.title} Shop'
