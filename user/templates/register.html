@@ -1,28 +1,44 @@
-{% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
-    {% block title %}
-    <title>Sign up</title>
-    {% endblock title %}
-
-{% block content %}
- <section class="mb-5" >
-    <div class="content-section ">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Sign up</legend>
-                {{ form|crispy }}
-            </fieldset>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Account</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+</head>
+<body>
+    <div class="registration-form">
+        <form method="post">
+             {% csrf_token %}
+            <div class="form-icon">
+                <span><i class="icon icon-user"></i></span>
+            </div>
             <div class="form-group">
-                <button class="btn btn-primary" type="submit">Sign Up</button>
+                {{ form.username|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.password1|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.password2|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                <button class="btn btn-block create-account" type="submit">Create Account</button>
             </div>
         </form>
-        <div class="border-top pt-3">
+        <div class="social-media">
             <small class="text-muted">
                 Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
             </small>
         </div>
     </div>
-</section>
-
-{% endblock content %}
+</body>
+</html>

@@ -98,6 +98,9 @@ class Product(GeneralModel):
     # on_delete=models.CASCADE,
     # null=True,
     # related_name='product_shop')
+    quantity = models.PositiveIntegerField(
+        default=1
+    )
     price = models.PositiveBigIntegerField()
 
     class Meta:
