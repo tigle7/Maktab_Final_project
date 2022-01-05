@@ -1,0 +1,24 @@
+{% extends 'adminshop/base.html' %}
+{% block dashbordcontent %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <div class="w3-container w3-border w3-large">
+      <div class="w3-left-align">
+        <p>Are You Sure For Deleting  - {{shop_detail.name}}-  Shop?</p>
+        <p>Shop Type :{{shop_detail.shop_type}} </p>
+      </div>
+    </div>
+    <a href="{% url 'shops:dashboard_admin'%}" class="w3-btn w3-black">Return To Shops List</a>
+    <a href="{% url 'shops:delete_shop_admin' shop.slug %}" class="w3-button w3-dark-grey">Yes  <i class="fa fa-arrow-right"></i></a>
+
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbordcontent %}

@@ -27,4 +27,4 @@ class Login(LoginView):
 
     def get_success_url(self):
         user = self.request.user
-        return reverse('dashboard', args = [str(self.request.user.username)])
+        return reverse('shop_dashboard',)

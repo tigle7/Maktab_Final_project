@@ -1,0 +1,50 @@
+{% extends 'adminshop/base.html' %}
+{% block dashbordcontent %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <div class="w3-container w3-border w3-large">
+      <div class="w3-left-align">
+        <p>Shop Name : {{shop_name.name}}</p>
+        <p>Shop Type : {{shop_name.shop_type}}</p>
+      </div>
+    </div>
+    <h5>Products</h5>
+    {% if product_list %}
+    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+      <tr>
+        <th>Name</th>
+        <th>Image</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Is Published</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {% for product in product_list%}
+      <tr>
+        <td>{{product.name}}</td>
+        <td>{{product.image}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.stock}}</td>
+        <td>{{product.is_published}}</td>
+        <td><a href="{% url 'products:edit_product_admin' product.slug %}">edit</a></td>
+        <td><a href="{% url 'products:conform_delete_Product_admin' product.slug %}">Delete</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>no product</p>
+    {% endif %}
+    <br>
+    <a  href="{% url 'products:new_product_admin' shop_name.slug %}" class="w3-button w3-dark-grey">New Product  <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbordcontent %}

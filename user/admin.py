@@ -13,16 +13,16 @@ class CustomUserAdmin(UserAdmin):
     list_editable = ('is_seller',)
     list_display = ('email', 'is_seller', 'is_staff', 'is_active','last_name',)
     list_filter = ('is_staff', 'is_active', 'is_seller')
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_seller')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
-        ),
-    )
+    # fieldsets = (
+    #     (None, {'fields': ('email', 'password')}),
+    #     ('Permissions', {'fields': ('is_staff', 'is_active', 'is_seller')}),
+    # )
+    # add_fieldsets = (
+    #     (None, {
+    #         'classes': ('wide',),
+    #         'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
+    #     ),
+    # )
     search_fields = ('email',)
     ordering = ('email',)
     actions = ['make_seller']

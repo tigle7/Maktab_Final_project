@@ -1,0 +1,50 @@
+{% extends 'shop_base.html' %}
+{% block dashbord %}
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
+  </header>
+
+
+  <div class="w3-container">
+    <h5>SHOPS</h5>
+    {% if shops %}
+    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>status</th>
+        <th class="text-center">Actions</th>
+      </tr>
+      {% for shop in shops%}
+      <tr>
+        <td>{{shop.title}}</td>
+        <td>{{shop.type}}</td>
+        <td>{% if shop.status == 'C' %}
+            <span >Active</span> 
+            {% else %}
+            <span>Pending</span>
+            {% endif %}
+        </td>
+        <td class="text-center">
+            <a class="btn btn-info btn-sm" href="#">
+              <i class="fa fa-eye"></i></a>
+            <a class="btn btn-info btn-sm" href="#">
+              <i class="fa fa-pencil"></i></a>
+            <a class="btn btn-danger btn-sm" href="#">
+               <i class="fa fa-trash"></i></a>
+        </td>
+        {% comment %} <td><a href="{% url 'shops:edit_shop' shop.slug %}">edit</a></td>
+        <td><a href="{% url 'products:list_product_of_shop' shop.slug %}">Info</a></td>
+        <td><a href="{% url 'shops:confirm_delete_shop_admin' shop.slug %}">Delete</a></td> {% endcomment %}
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p>no shop</p>
+    {% endif %}
+    <br>
+    <a  href="" class="btn btn-primary">New Shop  <i class="fa fa-arrow-right"></i></a>
+  </div>
+  <hr>
+  {% endblock dashbord %}

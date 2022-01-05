@@ -21,8 +21,9 @@ class GeneralModel(models.Model):
     class Meta:
         abstract = True
 
+
 class ShopType(GeneralModel):
-    
+
     title = models.CharField(
         verbose_name=_("Shop Type Title"),
         max_length=250
@@ -41,6 +42,7 @@ class ShopType(GeneralModel):
 
     def __str__(self):
         return self.title
+
 
 class Category(GeneralModel):
 
@@ -94,24 +96,24 @@ class Product(GeneralModel):
     is_available = models.BooleanField(
         default=True
     )
-    # shop = models.ForeignKey('Shop',
-    # on_delete=models.CASCADE,
-    # null=True,
-    # related_name='product_shop')
     quantity = models.PositiveIntegerField(
         default=1
     )
     price = models.PositiveBigIntegerField()
+    # shop = models.ForeignKey('Shop',
+    # on_delete=models.CASCADE,
+    # null=True,
+    # related_name='product_shop')
 
     class Meta:
         verbose_name_plural = 'Products'
         ordering = ('-created_at',)
 
-    # def get_absolute_url(self):
-    #     return reverse('store:product_detail', args=[self.slug])
     objects = models.Manager
     available = AvailableProductManager
-    
+    # def get_absolute_url(self):
+    #     return reverse('store:product_detail', args=[self.slug])
+
     def __str__(self):
         return self.title
 
@@ -158,10 +160,6 @@ class Shop(GeneralModel):
 
 class CartItem(GeneralModel):
 
-    # cart = models.ForeignKey(
-    #     'Cart',
-    #     on_delete=models.CASCADE
-    # )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE
@@ -169,6 +167,10 @@ class CartItem(GeneralModel):
     quantity = models.PositiveIntegerField(
         default=1
     )
+    # cart = models.ForeignKey(
+    #     'Cart',
+    #     on_delete=models.CASCADE
+    # )
 
     def __str__(self):
         return f"{self.quantity} of {self.product}"
@@ -186,7 +188,6 @@ class Cart(GeneralModel):
         choices=STATUS_CHOICES,
         default='N'
     )
-
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -196,7 +197,7 @@ class Cart(GeneralModel):
         CartItem,
         related_name='items'
     )
-    
+
     class Meta:
         ordering = ('-created_at',)
 
