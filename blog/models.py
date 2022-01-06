@@ -82,7 +82,6 @@ class Post(GeneralModel):
         blank=True
     )
     category = models.ManyToManyField(Category)
-    tag = models.ManyToManyField(Tag)
 
     author = models.ForeignKey(
         User,

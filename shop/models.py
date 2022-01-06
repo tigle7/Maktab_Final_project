@@ -3,6 +3,9 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from .managers import ConfirmedShopManager, AvailableProductManager
+from django.utils.text import slugify
+from random import randint
+
 
 User = get_user_model()
 
@@ -99,6 +102,11 @@ class Product(GeneralModel):
     quantity = models.PositiveIntegerField(
         default=1
     )
+    shop = models.ForeignKey(
+        'Shop',
+        on_delete=models.CASCADE,
+        null=True
+    )
     price = models.PositiveBigIntegerField()
     # shop = models.ForeignKey('Shop',
     # on_delete=models.CASCADE,
@@ -137,10 +145,6 @@ class Shop(GeneralModel):
         User,
         on_delete=models.CASCADE,
     )
-    proucts = models.ManyToManyField(
-        Product,
-        related_name='products'
-    )
     type = models.ForeignKey(
         ShopType,
         related_name='shop_type',
@@ -151,8 +155,27 @@ class Shop(GeneralModel):
         upload_to='uploads',
         default='uploads/default.jpg'
     )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        blank=True,
+        null=True
+    )
     objects = models.Manager()
     confirmed = ConfirmedShopManager()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            if Shop.objects.filter(title=self.title).exists() or Shop.objects.filter(slug=self.title).exists():
+                add_rand = str(randint(1, 10000))
+                self.slug = slugify(self.title) + "-" + add_rand
+            else:
+                self.slug = slugify(self.title)
+        super(Shop, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        #  kwargs={'slug': self.slug}
+        return reverse('shop_dashboard',)
 
     def __str__(self):
         return f'{self.title} Shop'
@@ -167,10 +190,16 @@ class CartItem(GeneralModel):
     quantity = models.PositiveIntegerField(
         default=1
     )
-    # cart = models.ForeignKey(
-    #     'Cart',
-    #     on_delete=models.CASCADE
-    # )
+    cart = models.ForeignKey(
+        'Cart',
+        on_delete=models.CASCADE,
+        related_name='order_items',
+        null=True
+    )
+    price = models.PositiveBigIntegerField(
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.quantity} of {self.product}"
@@ -193,9 +222,9 @@ class Cart(GeneralModel):
         on_delete=models.CASCADE,
         related_name="carts"
     )
-    items = models.ManyToManyField(
-        CartItem,
-        related_name='items'
+    total_price = models.PositiveBigIntegerField(
+        null=True,
+        blank=True
     )
 
     class Meta:

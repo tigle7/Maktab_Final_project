@@ -46,7 +46,7 @@ class ShopAdmin(admin.ModelAdmin):
     list_editable = ('status',)
     actions = ['make_confirmed']
     search_fields = ('title', 'owner')
-    
+    prepopulated_fields = {'slug': ('title',)}    
 
     @admin.action(description='Make selected Shops as confirmed')
     def make_confirmed(self, request, queryset):

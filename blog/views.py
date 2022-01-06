@@ -112,7 +112,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
-    success_url = '/'
+    success_url = '/blog'
 
     def test_func(self):
         post = self.get_object()
@@ -160,7 +160,7 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
 class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = Category
     template_name = 'category_delete.html'
-    success_url = '/'
+    success_url = '/blog/categories'
 
     def test_func(self):
         category = self.get_object()
