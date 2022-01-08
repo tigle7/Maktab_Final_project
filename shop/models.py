@@ -94,7 +94,8 @@ class Product(GeneralModel):
         default='uploads/default.jpg'
     )
     slug = models.SlugField(
-        max_length=255
+        max_length=255,
+        blank=True
     )
     is_available = models.BooleanField(
         default=True
@@ -121,6 +122,17 @@ class Product(GeneralModel):
     available = AvailableProductManager
     # def get_absolute_url(self):
     #     return reverse('store:product_detail', args=[self.slug])
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            if Product.objects.filter(title=self.title).exists() or Product.objects.filter(slug=self.title).exists():
+                add_rand = str(randint(1, 10000))
+                self.slug = slugify(self.title) + "-" + add_rand
+            else:
+                self.slug = slugify(self.title)
+        super(Product, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('shop_detail', kwargs={'slug': self.shop.slug})
 
     def __str__(self):
         return self.title
@@ -174,8 +186,7 @@ class Shop(GeneralModel):
         super(Shop, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        #  kwargs={'slug': self.slug}
-        return reverse('shop_dashboard',)
+        return reverse('shop_detail', kwargs={'slug': self.slug})
 
     def __str__(self):
         return f'{self.title} Shop'
@@ -200,7 +211,7 @@ class CartItem(GeneralModel):
         null=True,
         blank=True
     )
-
+    
     def __str__(self):
         return f"{self.quantity} of {self.product}"
 

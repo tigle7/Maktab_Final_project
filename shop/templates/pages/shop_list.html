@@ -17,7 +17,7 @@
         </tr>
         {% for shop in shops%}
         <tr>
-            <td>{{shop.title}}</td>
+            <td > <a href="{% url 'shop_detail' shop.slug %}"><b> {{shop.title}}</b> </a> </td>
             <td>{{shop.type}}</td>
             <td>{% if shop.status == 'C' %}
                 <span class="badge badge-success">Active</span> {% else %}
@@ -26,9 +26,9 @@
             <td class="text-center">{{ shop.created_at|date:'Y-m-d H:i' }}</td>
             <td class="text-center">{{ shop.updated_at|date:'Y-m-d H:i' }}</td>
             <td class="text-center">
-                <a class="btn btn-primary btn-sm" href="#">
+                <a class="btn btn-primary btn-sm" href="{% url 'shop_detail' shop.slug %}">
                     <i class="fa fa-eye"></i></a>
-                <a class="btn btn-primary btn-sm" href="{% url 'edit_shop' shop.slug %}">
+                <a class="btn btn-primary btn-sm" href="{% url 'update_shop' shop.slug %}">
                     <i class="fa fa-pencil"></i></a>
                 <a class="btn btn-danger  btn-sm" href="{% url 'delete_shop' shop.slug %}">
                     <i class="fa fa-trash"></i></a>
@@ -41,7 +41,7 @@
         {% endfor %}
     </table>
     {% else %}
-    <p>no shop</p>
+    <h3>Let's Create Shop</h3>
     {% endif %}
     <br>
     <a href="{% url 'create_shop' %}" class="btn btn-primary ">New Shop  <i class="fa fa-arrow-right"></i></a>

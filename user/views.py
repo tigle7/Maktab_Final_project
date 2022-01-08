@@ -8,6 +8,7 @@ from django.urls import reverse_lazy, reverse
 from blog.models import Post
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from django.views.generic import CreateView
 
 def register(request):
     if request.method == 'POST':
@@ -28,3 +29,8 @@ class Login(LoginView):
     def get_success_url(self):
         user = self.request.user
         return reverse('shop_dashboard',)
+
+class Register(CreateView):
+    form_class = UserRegisterForm
+    template_name = "register.html"
+    success_url = "/dashboard/"

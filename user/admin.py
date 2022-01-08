@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     form = UserChangeForm
     model = CustomUser
     list_editable = ('is_seller',)
-    list_display = ('email', 'is_seller', 'is_staff', 'is_active','last_name',)
+    list_display = ('email', 'username','is_seller', 'is_staff', 'is_active','last_name',)
     list_filter = ('is_staff', 'is_active', 'is_seller')
     # fieldsets = (
     #     (None, {'fields': ('email', 'password')}),

@@ -1,0 +1,25 @@
+{% extends 'shop_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block dashbord %}
+  <!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2 ">Add Product</div>
+</header>
+
+
+  <div class="container mt-3">
+    <form enctype="multipart/form-data"  method="post" >
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <p>
+            <button class="btn btn-primary btn-block" type="submit">Add Product</button>
+        </p>
+      </form>
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbord %}

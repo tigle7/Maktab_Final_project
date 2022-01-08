@@ -95,7 +95,7 @@ def add_comment(request, slug):
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'image', 'category', ]
+    fields = ['title', 'content', 'category', 'image', ]
     template_name = 'post_form.html'
 
     def form_valid(self, form):

@@ -1,25 +1,19 @@
-{% extends 'shop_base.html' %} {% load static %} {% block dashbord %}
-
+{% extends 'shop_base.html' %} {% block dashbord %}
+<!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2 ">All Products</div>
+</header>
 
 <div class="container mt-3">
-    <div class="row border-bottom">
-        <img src={{ shop.image.url }} class="py-1 " style="width:150px;">
-        <div class=" col col-md-6 ">
-            <div class=" mt-5 h3"><i class="far h2 fa-store"></i> {{shop.title}} </div>
-            <div class=""><i class=" far fa-tags"></i> {{shop.type}} </div>
-        </div>
-    </div>
-    <h5 class="mt-4 ">Products</h5>
-</div>
-<div class="container">
-    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
-        <tr>
+    <table class="table w3-striped w3-border table-hover w3-white">
+            <tr>
             <th>Name</th>
             <th>Image</th>
             <th>Price</th>
             <th>Qty</th>
             <th class="" >Status</th>
             <th>Category</th>
+            <th>Shop</th>
             <th class="text-center">Created</th>
             <th class="text-center"> Actions</th>
         </tr>
@@ -36,6 +30,7 @@
                 <span class="badge badge-warning">No</span> {% endif %}
             </td>
             <td>{{product.category}}</td>
+            <td>{{product.shop}}</td>
             <td class="text-center">{{ product.created_at|date:'Y-m-d H:i' }}</td>
             <td class="text-center">
                 <a class="btn btn-primary btn-sm" href="{% url 'update_product' product.slug %}">
@@ -47,6 +42,5 @@
         {% endfor %}
     </table>
     <br>
-    <a href="{% url 'create_product' shop.slug %}" class="btn btn-primary">Add Product <i class="fa fa-arrow-right"></i></a>
 </div>
 <hr> {% endblock dashbord %}

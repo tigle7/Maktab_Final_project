@@ -8,14 +8,14 @@ admin.site.register(CartItem)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug')
+    list_display = ('title', 'author','slug', 'created_at')
     prepopulated_fields = {'slug': ('title',)}
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    list_display = ('show_image', 'title', 'price', 'is_available', 'owner')
+    list_display = ('show_image', 'title', 'price', 'is_available', 'owner', 'shop')
     list_filter = ('is_available', 'created_at', 'owner')
     search_fields = ('title',)
     list_editable = ('is_available',)

@@ -13,4 +13,9 @@ class ShopForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'category', 'description', 'image', 'price']
+        fields = ['title', 'category', 'price', 'description', 'is_available', 'image']
+
+    def __init__(self, *args, **kwargs):
+       user = kwargs.pop('owner')
+       super(ProductForm, self).__init__(*args, **kwargs)
+       self.fields['category'].queryset = Category.objects.filter(author=user)
