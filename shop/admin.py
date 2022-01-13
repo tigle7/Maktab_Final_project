@@ -3,21 +3,49 @@ from .models import *
 from django.utils.html import format_html
 # Register your models here.
 
-# admin.site.register(Cart)
-admin.site.register(CartItem)
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    date_hierarchy = 'created_at'
+    list_display = ('id', 'owner', 'total_price',
+                    'items_count', 'status', 'created_at')
+    list_display_links = ('id', 'owner')
+    list_filter = ('status', 'created_at')
+    list_editable = ('status',)
+    list_per_page = 25
+    search_fields = ('owner__phone_number', 'owner__email',
+                     'items__product__title')
+    actions = ['make_canceled']
+
+    @admin.action(description='Make selected Cart as canceled')
+    def make_canceled(self, request, queryset):
+        rows = queryset.update(status='C')
+        self.message_user(request, f'{rows} updated')
+
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cart', 'product', 'quantity', 'total_price')
+    list_display_links = ('id', 'cart')
+    list_per_page = 25
+    search_fields = ('cart__owner__phone_number',
+                     'cart__owner__email', 'product__title')
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author','slug', 'created_at')
+    list_display = ('title', 'author', 'slug', 'created_at')
     prepopulated_fields = {'slug': ('title',)}
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    list_display = ('show_image', 'title', 'price', 'is_available', 'owner', 'shop')
+    list_display = ('show_image', 'title', 'price',
+                    'is_available', 'owner', 'shop')
     list_filter = ('is_available', 'created_at', 'owner')
     search_fields = ('title',)
+    list_per_page = 25
     list_editable = ('is_available',)
     prepopulated_fields = {'slug': ('title',)}
     # raw_id_fields = ('category',)
@@ -46,30 +74,15 @@ class ShopAdmin(admin.ModelAdmin):
     list_editable = ('status',)
     actions = ['make_confirmed']
     search_fields = ('title', 'owner')
-    prepopulated_fields = {'slug': ('title',)}    
+    prepopulated_fields = {'slug': ('title',)}
 
     @admin.action(description='Make selected Shops as confirmed')
     def make_confirmed(self, request, queryset):
         rows = queryset.update(status='C')
         self.message_user(request, f'{rows} updated')
 
+
 @admin.register(ShopType)
 class ShopTypeAdmin(admin.ModelAdmin):
     list_display = ('title', 'author')
     prepopulated_fields = {'slug': ('title',)}
-
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    search_fields = ('owner',)
-    list_display = ('owner', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
-    list_editable = ('status',)
-    actions = ['make_canceled']
-
-
-    @admin.action(description='Make selected Cart as canceled')
-    def make_canceled(self, request, queryset):
-        rows = queryset.update(status='C')
-        self.message_user(request, f'{rows} updated')

@@ -1,17 +1,30 @@
-{% extends 'shop_base.html' %} {% block dashbord %}
+{% extends 'shop_base.html' %} {% block dashbord %} {% load crispy_forms_tags %}
 <!-- Header -->
 <header class="w3-container" style="padding-top:22px">
-    <div class="border-bottom h2 ">All Products</div>
+    <div class="border-bottom h2"><i class="fa fa-shopping-bag"></i> PRODUCTS</div>
 </header>
 
 <div class="container mt-3">
+    <form class=" border-bottom mb-3">
+        <div class="form-row" method="get">
+            <div class=" mb-0 form-group col-md-6">
+                {{ filter.form.title|as_crispy_field }}
+            </div>
+            <div class=" mb-0 form-group col-md-6">
+                {{ filter.form.created_at|as_crispy_field }}
+            </div>
+            
+            {% comment %} <input class="btn btn-primary" type="submit" name=sumbit /> {% endcomment %}
+        </div>
+        <button class=" mb-2 btn btn-primary" type="submit">Search</button>
+    </form>
     <table class="table w3-striped w3-border table-hover w3-white">
-            <tr>
+        <tr>
             <th>Name</th>
             <th>Image</th>
             <th>Price</th>
             <th>Qty</th>
-            <th class="" >Status</th>
+            <th>Status</th>
             <th>Category</th>
             <th>Shop</th>
             <th class="text-center">Created</th>
@@ -19,13 +32,13 @@
         </tr>
         {% for product in products%}
         <tr>
-            <td > {{product.title}} </td>
+            <td> {{product.title}} </td>
             <td>
                 <img src={{ product.image.url }} style="width:30px;">
             </td>
             <td>{{product.price}}</td>
             <td>{{product.quantity}}</td>
-            <td class="" >{% if product.is_available == True %}
+            <td class="">{% if product.is_available == True %}
                 <span class=" badge badge-success">OK</span> {% else %}
                 <span class="badge badge-warning">No</span> {% endif %}
             </td>
@@ -43,4 +56,4 @@
     </table>
     <br>
 </div>
-<hr> {% endblock dashbord %}
+ {% endblock dashbord %}

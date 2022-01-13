@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from .managers import ConfirmedShopManager, AvailableProductManager
 from django.utils.text import slugify
 from random import randint
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 User = get_user_model()
@@ -57,6 +59,14 @@ class Category(GeneralModel):
         max_length=255,
         unique=True
     )
+    parent = models.ForeignKey(
+        "self",
+        verbose_name="Category Parent",
+        related_name='category_parent',
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True
+    )
     author = models.ForeignKey(
         User,
         verbose_name=_('Category Author'),
@@ -88,7 +98,12 @@ class Product(GeneralModel):
     title = models.CharField(
         max_length=255
     )
-    description = models.TextField()
+    discount_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
     image = models.ImageField(
         upload_to='uploads',
         default='uploads/default.jpg'
@@ -106,22 +121,20 @@ class Product(GeneralModel):
     shop = models.ForeignKey(
         'Shop',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name='product_shop'
     )
     price = models.PositiveBigIntegerField()
-    # shop = models.ForeignKey('Shop',
-    # on_delete=models.CASCADE,
-    # null=True,
-    # related_name='product_shop')
+    description = models.TextField()
+    
 
     class Meta:
         verbose_name_plural = 'Products'
         ordering = ('-created_at',)
 
-    objects = models.Manager
-    available = AvailableProductManager
-    # def get_absolute_url(self):
-    #     return reverse('store:product_detail', args=[self.slug])
+    objects = models.Manager()
+    available = AvailableProductManager()
+
     def save(self, *args, **kwargs):
         if not self.slug:
             if Product.objects.filter(title=self.title).exists() or Product.objects.filter(slug=self.title).exists():
@@ -136,6 +149,19 @@ class Product(GeneralModel):
 
     def __str__(self):
         return self.title
+
+    @property
+    def discount_percent(self):
+        if self.discount_price:
+            discount_percent = 100 - (self.discount_price * 100) / self.price
+            return int(discount_percent)
+        return
+
+    @property
+    def final_price(self):
+        if self.discount_price:
+            return self.discount_price
+        return self.price
 
 
 class Shop(GeneralModel):
@@ -204,16 +230,16 @@ class CartItem(GeneralModel):
     cart = models.ForeignKey(
         'Cart',
         on_delete=models.CASCADE,
-        related_name='order_items',
+        related_name='items',
         null=True
-    )
-    price = models.PositiveBigIntegerField(
-        null=True,
-        blank=True
     )
     
     def __str__(self):
         return f"{self.quantity} of {self.product}"
+
+    @property
+    def total_price(self):
+        return self.product.final_price * self.quantity
 
 
 class Cart(GeneralModel):
@@ -233,13 +259,39 @@ class Cart(GeneralModel):
         on_delete=models.CASCADE,
         related_name="carts"
     )
-    total_price = models.PositiveBigIntegerField(
-        null=True,
-        blank=True
+    shop = models.ForeignKey(
+        "Shop",
+        on_delete=models.SET_NULL,
+        null=True
     )
+    # items = models.ManyToManyField(
+    #     CartItem,
+    #     related_name='items'
+    # )
 
     class Meta:
         ordering = ('-created_at',)
 
     def __str__(self):
         return f'{self.owner.username} Cart ({self.created_at})'
+
+    @property
+    def total_price(self):
+        total_price = 0
+        for item in self.items.all():
+            total_price += item.total_price
+        return total_price
+
+    @property
+    def items_count(self):
+        return self.items.all().count()
+
+    class Meta:
+        ordering = ('-created_at',)
+
+@receiver(post_save, sender=User)
+def create_cart(sender, instance, created, **kwargs):
+    """ When user registered create cart model with this user """
+    if created:
+        Cart.objects.create(owner=instance)
+

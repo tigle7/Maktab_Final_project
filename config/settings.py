@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 env = environ.Env(
     # set casting, default value
@@ -46,6 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'django_filters',
+    'drf_yasg',
     'crispy_forms',
     'user',
     'blog',
@@ -97,6 +102,13 @@ DATABASES = {
         'HOST': os.environ.get('DATABASE_POSTGRES_HOST'),
         'PORT': os.environ.get('DATABASE_POSTGRES_PORT'),
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Password validation
@@ -160,3 +172,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = 'login'
 # LOGIN_REDIRECT_URL = 'shop_dashboard'
+
+
+SIMPLE_JWT = {
+'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+}

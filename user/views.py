@@ -6,9 +6,13 @@ from django.contrib.auth.views import LoginView
 from django.views.generic import ListView
 from django.urls import reverse_lazy, reverse
 from blog.models import Post
-from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.views.generic import CreateView
+from .serializers import RegisterSerializer
+from rest_framework import generics, permissions
+
+User = get_user_model()
+
 
 def register(request):
     if request.method == 'POST':
@@ -34,3 +38,10 @@ class Register(CreateView):
     form_class = UserRegisterForm
     template_name = "register.html"
     success_url = "/dashboard/"
+
+class ApiRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny]
+    serializer_class = RegisterSerializer
+
+    

@@ -1,0 +1,50 @@
+{% extends 'shop_base.html' %}
+
+
+{% block dashbord %}
+
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2 "><i class="fa fa-shopping-cart"></i> CARTS</div>
+</header>
+
+<div class="container mt-3">
+    {% if carts %}
+    <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
+      <tr>
+        <th>Shop</th>
+        <th>Byuer</th>
+        <th>Status</th>
+        <th>Items</th>
+        <th>Price</th>
+        <th class="text-center">Created</th>
+          <th class="text-center"> Actions</th>
+      </tr>
+      {% for cart in carts %}
+      <tr>
+        <td>{{cart.shop}}</td>
+        <td>{{cart.owner}}</td>
+        <td>{{cart.status}}</td>
+        <td>{{cart.items_count}}</td>
+        <td>{{cart.total_price}}</td>
+        <td class="text-center">{{cart.created_at|date:'Y-m-d H:i'}}</td>
+        <td class="text-center">
+                <a class="btn btn-primary btn-sm" href="{% url 'list_cart_item' cart.id %}">
+                    <i class="fa fa-eye"></i></a>
+                <a class="btn btn-primary btn-sm" href="">
+                    <i class="fa fa-pencil"></i></a>
+        </td>
+      </tr>
+
+      {% endfor %}
+    </table>
+    {% else %}
+    <div class="w3-panel w3-padding-20 w3-center w3-pale-green w3-round-xxlarge w3-border">
+      <h3>No Order!</h3>
+    </div>
+    {% endif %}
+  </div>
+  <hr>
+  
+
+
+  {% endblock dashbord %}

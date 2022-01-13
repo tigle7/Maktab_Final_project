@@ -10,12 +10,15 @@ from django.contrib import messages
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django_filters.views import FilterView
+from shop.filters import ProductFilter
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(LoginRequiredMixin, FilterView):
     model = Product
     template_name = 'pages/product_list.html'
     context_object_name = 'products'
+    filterset_class = ProductFilter
 
     def get_queryset(self):
         return Product.objects.filter(owner=self.request.user, shop__status__in=['C', 'P']).order_by('-created_at')
@@ -46,7 +49,7 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Product
     template_name = "forms/product_form.html"
-    fields = ['title', 'category', 'price',
+    fields = ['title', 'category', 'price', 'discount_price',
               'description', 'is_available', 'image']
     success_message = "Product successfully edited"
 
