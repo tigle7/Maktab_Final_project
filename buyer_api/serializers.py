@@ -5,7 +5,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-
+from django.db.models import F
 from rest_framework import serializers
 from shop.models import *
 
@@ -133,6 +133,51 @@ class AddItemToCartSerializer(serializers.ModelSerializer):
     def get_cart_items_count(self, obj):
         user = self.context.get('request').user
         return user.carts.get(status='N').items.count()
+
+class CreateOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
+        exclude = ('updated_at', 'shipping_status')
+        read_only_fields = ('cart', 'owner',)
+        # fields = '__all__'
+        # read_only_fields = ('owner',)
+
+    def create(self, data):
+        user = self.context.get('request').user
+        cart = user.carts.get(status='N')
+        # Validate cart
+        if not cart.items.all().exists():
+            raise serializers.ValidationError("Cart must not be empty")
+        # Update products quantity & CartItem price
+        for item in cart.items.all():
+            Product.objects.filter(id=item.product.id).update(quantity=F('quantity') - item.quantity)
+            item.price = item.product.final_price
+            item.save()
+        cart.status = 'P'
+        cart.save()
+        order = Order.objects.create(
+            owner=user, cart=cart, shipping_status="Preparation")
+        # Create another cart model with status not paid
+        Cart.objects.create(owner=user)
+        return order
+
+class OrderListSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField()
+    items_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+        # depth = 1
+    def get_total_price(self, obj):
+        total_price = 0
+        for item in obj.cart.items.all():
+            total_price += item.total_price
+        return total_price
+
+    def get_items_count(self, obj):
+        return obj.cart.items.all().count()
 
 # class ProfileSerializer(serializers.ModelSerializer):
 

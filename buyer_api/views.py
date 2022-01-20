@@ -10,12 +10,13 @@ from .filters import *
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import parsers, renderers
+from django.db.models import Q
 # Create your views here.
 
 User = get_user_model()
 
 
-class ShopListApi(ListAPIView):
+class ShopListView(ListAPIView):
     
     # permission_classes = [IsAuthenticated]
     queryset = Shop.confirmed.all()
@@ -23,13 +24,13 @@ class ShopListApi(ListAPIView):
     filterset_class = ShopFilter
 
 
-class ShopTypeListApi(ListAPIView):
+class ShopTypeListView(ListAPIView):
 
     queryset = ShopType.objects.all()
     serializer_class = ShopTypeSerializer
 
 
-class ShopCategoryListApi(ListAPIView):
+class ShopCategoryListView(ListAPIView):
 
     serializer_class = ShopCategorySerializer
 
@@ -39,7 +40,7 @@ class ShopCategoryListApi(ListAPIView):
         return queryset
 
 
-class ShopProductListApi(ListAPIView):
+class ShopProductListView(ListAPIView):
 
     serializer_class = ProductSerializer
     filterset_class = ProductFilter
@@ -49,7 +50,7 @@ class ShopProductListApi(ListAPIView):
         queryset = Product.objects.filter(shop=shop)
         return queryset
 
-class ShopProductDetailApi(RetrieveUpdateAPIView):
+class ShopProductDetailView(RetrieveUpdateAPIView):
 
     # parser_classes = (parsers.MultiPartParser)
     model = Product
@@ -66,12 +67,13 @@ class ShopProductDetailApi(RetrieveUpdateAPIView):
         return get_object_or_404(Product, slug=self.kwargs['slug'])
 
 class CartView(ModelViewSet):
-    # serializer_class = AddItemToCartSerializer
-    # model = CartItem
+
+    parser_classes = (parsers.FormParser,)
+    
     def list(self, request):
         obj, _ = Cart.objects.get_or_create(owner=request.user, status="N")
         # Remove unavailable items from cart
-        unavailable_items = obj.items.filter(product__active=False)
+        unavailable_items = obj.items.filter(Q(product__active=False) | Q(product__quantity__lte=0))
         if unavailable_items.exists():
             unavailable_items.delete()
         serializer = CartSerializer(obj, context={'request': request})
@@ -85,6 +87,17 @@ class CartView(ModelViewSet):
             return AddItemToCartSerializer
         return CartItemSerializer
 
+class OrderView(ListCreateAPIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.request.user.orders.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateOrderSerializer
+        return OrderListSerializer
 
 # class CreateCustomerProfileView(CreateAPIView):
 #     parser_classes = (MultiPartParser, FormParser)

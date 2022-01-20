@@ -121,9 +121,6 @@ class Product(GeneralModel):
         max_length=255,
         blank=True
     )
-    # is_available = models.BooleanField(
-    #     default=True
-    # )
     quantity = models.PositiveIntegerField(
         default=1
     )
@@ -136,7 +133,6 @@ class Product(GeneralModel):
     active = models.BooleanField(default=True)
     price = models.PositiveBigIntegerField()
     description = models.TextField()
-    
 
     class Meta:
         verbose_name_plural = 'Products'
@@ -162,7 +158,7 @@ class Product(GeneralModel):
 
     @property
     def is_available(self):
-        return self.quantity > 0 and self.active
+        return self.quantity > 0 and self.active and self.shop.status == "C"
 
     @property
     def discount_percent(self):
@@ -248,17 +244,17 @@ class CartItem(GeneralModel):
         null=True
     )
     price = models.PositiveBigIntegerField(
-        null=True,
+        default=0,
         blank=True
     )
-    
+
     def __str__(self):
         return f"{self.quantity} of {self.product}"
 
     @property
     def shop(self):
         return self.product.shop
-    
+
     @property
     def available_quantity(self):
         return self.quantity <= self.product.quantity
@@ -329,9 +325,33 @@ class Cart(GeneralModel):
     class Meta:
         ordering = ('-created_at',)
 
+
+class Order(GeneralModel):
+
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        related_name='orders'
+    )
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.DO_NOTHING
+    )
+    shipping_status = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return f"{self.owner} - {self.created_at}"
+
+
 @receiver(post_save, sender=User)
 def create_cart(sender, instance, created, **kwargs):
     """ When user registered create cart model with this user """
     if created:
         Cart.objects.create(owner=instance)
-

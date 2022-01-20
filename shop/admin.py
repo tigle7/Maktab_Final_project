@@ -88,3 +88,10 @@ class ShopAdmin(admin.ModelAdmin):
 class ShopTypeAdmin(admin.ModelAdmin):
     list_display = ('title', 'author')
     prepopulated_fields = {'slug': ('title',)}
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('owner', 'cart', 'created_at')
+
+# admin.site.register(Order)
