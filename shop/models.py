@@ -76,10 +76,19 @@ class Category(GeneralModel):
     )
 
     def get_absolute_url(self):
-        return reverse('category_list')
+        return reverse('list_category')
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            if Category.objects.filter(title=self.title).exists() or Category.objects.filter(slug=self.title).exists():
+                add_rand = str(randint(1, 10000))
+                self.slug = slugify(self.title) + "-" + add_rand
+            else:
+                self.slug = slugify(self.title)
+        super(Category, self).save(*args, **kwargs)
 
 
 class Product(GeneralModel):
@@ -112,9 +121,9 @@ class Product(GeneralModel):
         max_length=255,
         blank=True
     )
-    is_available = models.BooleanField(
-        default=True
-    )
+    # is_available = models.BooleanField(
+    #     default=True
+    # )
     quantity = models.PositiveIntegerField(
         default=1
     )
@@ -124,6 +133,7 @@ class Product(GeneralModel):
         null=True,
         related_name='product_shop'
     )
+    active = models.BooleanField(default=True)
     price = models.PositiveBigIntegerField()
     description = models.TextField()
     
@@ -149,6 +159,10 @@ class Product(GeneralModel):
 
     def __str__(self):
         return self.title
+
+    @property
+    def is_available(self):
+        return self.quantity > 0 and self.active
 
     @property
     def discount_percent(self):
@@ -233,13 +247,27 @@ class CartItem(GeneralModel):
         related_name='items',
         null=True
     )
+    price = models.PositiveBigIntegerField(
+        null=True,
+        blank=True
+    )
     
     def __str__(self):
         return f"{self.quantity} of {self.product}"
 
     @property
+    def shop(self):
+        return self.product.shop
+    
+    @property
+    def available_quantity(self):
+        return self.quantity <= self.product.quantity
+
+    @property
     def total_price(self):
-        return self.product.final_price * self.quantity
+        if self.cart.status == 'N':
+            return self.product.final_price * self.quantity
+        return self.price * self.quantity
 
 
 class Cart(GeneralModel):
@@ -264,6 +292,11 @@ class Cart(GeneralModel):
         on_delete=models.SET_NULL,
         null=True
     )
+
+    #  @property
+    # def shop(self):
+    #     return self.items.first().shop
+
     # items = models.ManyToManyField(
     #     CartItem,
     #     related_name='items'
@@ -281,6 +314,13 @@ class Cart(GeneralModel):
         for item in self.items.all():
             total_price += item.total_price
         return total_price
+
+    @property
+    def total_count(self):
+        total_count = 0
+        for item in self.items.all():
+            total_count += item.quantity
+        return total_count
 
     @property
     def items_count(self):

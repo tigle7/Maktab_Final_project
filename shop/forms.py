@@ -11,8 +11,11 @@ class ShopForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'category', 'price', 'discount_price',
-                  'description', 'is_available', 'image']
+        fields = ['title', 'category', 'quantity', 'price',
+         'discount_price', 'active', 'image', 'description']
+                  
+
+        # exclude = ('updated_at', 'owner', 'shop',  )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('owner')
@@ -21,9 +24,10 @@ class ProductForm(forms.ModelForm):
 
 
 class CategoryForm(forms.ModelForm):
-    class meta:
+    class Meta:
         model = Category
         fields = ['title', 'parent']
+
 
 class TestForm(forms.Form):
     title = forms.CharField(required=False)

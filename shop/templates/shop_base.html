@@ -29,7 +29,7 @@
         <div class="w3-container w3-row">
             <div class="w3-col s4">
                 {% if user.image %}
-                <img src={ { user.image.url }} class="w3-circle w3-margin-right" style="width:66px; height:66px;">
+                <img src= {{ user.image.url }} class="w3-circle w3-margin-right" style="width:66px; height:66px;">
                 {% else %}
                 <img src="{% static  'images/userprofle.png' %}" class="w3-circle w3-margin-right" style="width:60px">
                 {% endif %}
@@ -54,7 +54,7 @@
             <a href="{% url 'shop_dashboard' %}" class="w3-bar-item w3-button w3-padding " id="SideItem" onclick="blue()" ><i class="fas fa-store"></i>  Shops</a>
             <a href="{% url 'list_product' %}" class="w3-bar-item w3-button w3-padding "><i class="fa fa-shopping-bag"></i>  Products</a>
             <a href="{% url 'list_cart' %}" class=" w3-bar-item w3-button w3-padding"><i class="fa fa-shopping-cart"></i>  Carts</a>
-            <a href="#" class="w3-bar-item w3-button w3-padding"><i class="fa fa-tags"></i>  Categories</a><br><br>
+            <a href="{% url 'list_category' %}" class="w3-bar-item w3-button w3-padding"><i class="fa fa-tags"></i>  Categories</a><br><br>
         </div>
     </nav>
 

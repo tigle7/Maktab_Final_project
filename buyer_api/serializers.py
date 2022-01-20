@@ -1,3 +1,4 @@
+from itertools import product
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
@@ -30,8 +31,136 @@ class ShopCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+
+    is_available = serializers.SerializerMethodField()
+    image = serializers.ImageField()
+
     class Meta:
         model = Product
-        fields = ["id", "title", "category", "slug", "image",
-                  'discount_price', 'price', 'description']
+        exclude = ('active', 'updated_at', 'owner', )
+        extra_kwargs = {
+            'slug': {'read_only': True},
+        }
+    def get_is_available(self, obj):
+        return obj.is_available
 
+class ProductDetailSerializer(serializers.ModelSerializer):
+
+    image = serializers.ImageField()
+
+    is_in_cart = serializers.SerializerMethodField()
+    discount_percent = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def get_discount_percent(self, obj):
+        return obj.discount_percent
+
+    def get_is_in_cart(self, obj):
+        user = self.context.get('request').user
+        if user.is_authenticated:
+            return user.carts.get(status="N").items.filter(product=obj.id).exists()
+        return False
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+
+    product = ProductSerializer(read_only=True)
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+        read_only_fields = ('cart',)
+
+    def get_total_price(self, obj):
+        return obj.total_price
+
+
+
+class CartSerializer(serializers.ModelSerializer):
+
+    total_price = serializers.SerializerMethodField()
+    items_count = serializers.SerializerMethodField()
+    items = CartItemSerializer(many=True)
+
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+    def get_total_price(self, obj):
+        return obj.total_price
+
+    def get_items_count(self, obj):
+        return obj.items_count
+
+
+
+class AddItemToCartSerializer(serializers.ModelSerializer):
+    cart_items_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = ('product', 'quantity', 'cart_items_count')
+
+    def validate_product(self, product):
+        if not product.is_available:
+            raise serializers.ValidationError("product is not available.")
+        return product
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        product = validated_data.get('product')
+        quantity = validated_data.get('quantity')
+        cart, _ = Cart.objects.get_or_create(owner=user, status='N')
+        cart_item = CartItem.objects.filter(cart=cart, product=product)
+        if cart_item.exists():
+            cart_item = cart_item.first()
+            if cart_item.quantity <= product.quantity - quantity:
+                cart_item.quantity += quantity
+                cart_item.save()
+            else:
+                raise serializers.ValidationError("product quantity is not enough.")
+            return cart_item
+        else:
+            if product.quantity < quantity:
+                raise serializers.ValidationError("product quantity is not enough.")
+        cart_item = CartItem.objects.create(cart=cart, product=product, quantity=quantity)
+        return cart_item
+
+    def get_cart_items_count(self, obj):
+        user = self.context.get('request').user
+        return user.carts.get(status='N').items.count()
+
+# class ProfileSerializer(serializers.ModelSerializer):
+
+#     image = serializers.ImageField()
+
+#     class Meta:
+#         model = User
+#         fields = ["customer_username", "country", "state",
+#                   "city", "address", "post_code", "custom_user", "image"]
+#         related_fields = ["custom_user"]
+#         extra_kwargs = {
+#             'custom_user': {'read_only': True},
+#         }
+
+    # def update(self, instance, validated_data):
+    #     # related object available
+    #     try:
+    #         # Handle related objects
+    #         for related_obj_name in self.Meta.related_fields:
+
+    #             # Validated data will show the nested structure
+    #             data = validated_data.pop(related_obj_name)
+    #             related_instance = getattr(instance, related_obj_name)
+
+    #             # Same as default update implementation
+    #             for attr_name, value in data.items():
+    #                 setattr(related_instance, attr_name, value)
+    #             related_instance.save()
+    #     except:
+    #         pass
+    #     return super(ProfileSerializer, self).update(instance, validated_data)

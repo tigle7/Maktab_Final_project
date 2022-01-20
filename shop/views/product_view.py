@@ -49,8 +49,8 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 class ProductUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Product
     template_name = "forms/product_form.html"
-    fields = ['title', 'category', 'price', 'discount_price',
-              'description', 'is_available', 'image']
+    fields = ['title', 'category', 'quantity', 'price',
+         'discount_price', 'active', 'image', 'description']
     success_message = "Product successfully edited"
 
 

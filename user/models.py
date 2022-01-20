@@ -27,6 +27,7 @@ class CustomUser(AbstractUser):
         unique=True
     )
     is_seller = models.BooleanField(default=False)
+    
     phone_number = models.CharField(
         max_length=11,
         null=True,
@@ -35,6 +36,23 @@ class CustomUser(AbstractUser):
     )
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
+
+    address =  models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+    city=models.CharField(
+        max_length=25,
+        null=True,
+        blank=True
+    )
+    image = models.ImageField(
+        upload_to='uploads',
+        default='uploads/userprofle.png',
+        blank=True,
+        null=True
+    )
 
     # objects = CustomUserManager()
 

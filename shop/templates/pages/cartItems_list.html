@@ -13,6 +13,7 @@
         <th>Name</th>
         <th>Image</th>
         <th>Quantity</th>
+        <th>Shop</th>
         <th>Total Price</th>
         <th>Product Price</th>
         <th class="text-center"> Actions</th>
@@ -20,8 +21,9 @@
       {% for cart_item in cart_items%}
       <tr>
         <td>{{cart_item.product}}</td>
-        <td><img src={{ cart_item.product.image.url }} style="width:30px;"></td>
+        <td><img src= {{ cart_item.product.image.url }} style="width:30px;"></td>
         <td>{{cart_item.quantity}}</td>
+        <td>{{cart_item.shop}}</td>
         <td>{{cart_item.total_price }}</td>
         <td>{{cart_item.product.final_price }}</td>
         <td class="text-center">

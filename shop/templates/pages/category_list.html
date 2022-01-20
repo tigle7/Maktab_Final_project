@@ -1,0 +1,35 @@
+{% extends 'shop_base.html' %} {% block dashbord %} {% load crispy_forms_tags %}
+<!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2"><i class="fa fa-tags"></i> CATEGORIES </div>
+</header>
+
+<div class="container mt-3">
+
+    <table class="table w3-striped w3-border table-hover w3-white">
+        <tr>
+            <th>Name</th>
+            <th>Parent</th>
+            <th>Products</th>
+            <th class="text-center">Created</th>
+            <th class="text-center"> Actions</th>
+        </tr>
+        {% for category in categories %}
+        <tr>
+            <td>{{category.title}}</td>
+            <td>{{category.parent}}</td>
+            <td>{{category.product_count}}</td>
+            <td class="text-center">{{ category.created_at|date:'Y-m-d H:i' }}</td>
+            <td class="text-center">
+                <a class="btn btn-primary btn-sm" href="{% url 'update_category' category.slug %}">
+                    <i class="fa fa-pencil"></i></a>
+                <a class="btn btn-danger  btn-sm" href="{% url 'delete_category' category.slug %}">
+                    <i class="fa fa-trash"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{% url 'create_category' %}" class="btn btn-primary ">New Category  <i class="fa fa-arrow-right"></i></a>
+</div>
+ {% endblock dashbord %}

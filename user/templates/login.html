@@ -14,6 +14,13 @@
 <body>
     <div class="registration-form">
         <form method="post">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
              {% csrf_token %}
             <div class="form-icon">
                 <span><i class="icon icon-user"></i></span>

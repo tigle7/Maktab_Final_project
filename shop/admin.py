@@ -7,7 +7,7 @@ from django.utils.html import format_html
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    list_display = ('id', 'owner', 'total_price',
+    list_display = ('id', 'owner', 'total_price', 'shop',
                     'items_count', 'status', 'created_at')
     list_display_links = ('id', 'owner')
     list_filter = ('status', 'created_at')
@@ -25,8 +25,9 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(CartItem)
 class CartItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cart', 'product', 'quantity', 'total_price')
+    list_display = ('id', 'cart', 'product', 'quantity', 'total_price', 'price')
     list_display_links = ('id', 'cart')
+    list_editable = ('price',)
     list_per_page = 25
     search_fields = ('cart__owner__phone_number',
                      'cart__owner__email', 'product__title')
@@ -41,15 +42,16 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    list_display = ('show_image', 'title', 'price',
-                    'is_available', 'owner', 'shop')
-    list_filter = ('is_available', 'created_at', 'owner')
+    list_display = ('show_image', 'title', 'quantity','price',
+                    'is_available', 'active', 'owner', 'shop')
+    list_filter = ('created_at', 'owner', 'shop')
     search_fields = ('title',)
     list_per_page = 25
-    list_editable = ('is_available',)
+    list_editable = ('price', 'quantity', 'active')
     prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('is_available',)
     # raw_id_fields = ('category',)
-    actions = ('make_available',)
+    # actions = ('make_available',)
 
     @admin.display(empty_value='-', description="show image")
     def show_image(self, obj):
@@ -60,10 +62,10 @@ class ProductAdmin(admin.ModelAdmin):
             )
         return '-'
 
-    @admin.action(description='Make selected products available')
-    def make_available(self, request, queryset):
-        rows = queryset.update(is_available=True)
-        self.message_user(request, f'{rows} updated')
+    # @admin.action(description='Make selected products available')
+    # def make_available(self, request, queryset):
+    #     rows = queryset.update(is_available=True)
+    #     self.message_user(request, f'{rows} updated')
 
 
 @admin.register(Shop)
