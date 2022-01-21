@@ -7,7 +7,7 @@ from django.utils.html import format_html
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    list_display = ('id', 'owner', 'total_price', 'shop',
+    list_display = ('id', 'owner', 'total_price',
                     'items_count', 'status', 'created_at')
     list_display_links = ('id', 'owner')
     list_filter = ('status', 'created_at')
@@ -27,7 +27,6 @@ class CartAdmin(admin.ModelAdmin):
 class CartItemAdmin(admin.ModelAdmin):
     list_display = ('id', 'cart', 'product', 'quantity', 'total_price', 'price')
     list_display_links = ('id', 'cart')
-    list_editable = ('price',)
     list_per_page = 25
     search_fields = ('cart__owner__phone_number',
                      'cart__owner__email', 'product__title')
@@ -42,7 +41,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    list_display = ('show_image', 'title', 'quantity','price',
+    list_display = ('show_image', 'id', 'title', 'quantity','price',
                     'is_available', 'active', 'owner', 'shop')
     list_filter = ('created_at', 'owner', 'shop')
     search_fields = ('title',)

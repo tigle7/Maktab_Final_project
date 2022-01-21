@@ -256,7 +256,7 @@ class CartItem(GeneralModel):
         return self.product.shop
 
     @property
-    def available_quantity(self):
+    def is_available_quantity(self):
         return self.quantity <= self.product.quantity
 
     @property
@@ -302,7 +302,7 @@ class Cart(GeneralModel):
         ordering = ('-created_at',)
 
     def __str__(self):
-        return f'{self.owner.username} Cart ({self.created_at})'
+        return f'{self.owner.username} - ({self.created_at.strftime("%d/%m/%Y, %H:%M:%S")})'
 
     @property
     def total_price(self):
@@ -347,7 +347,7 @@ class Order(GeneralModel):
         ordering = ('-created_at',)
 
     def __str__(self):
-        return f"{self.owner} - {self.created_at}"
+        return f'{self.owner} - ({self.created_at.strftime("%d/%m/%Y, %H:%M:%S")})'
 
 
 @receiver(post_save, sender=User)

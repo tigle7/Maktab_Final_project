@@ -73,9 +73,11 @@ class CartView(ModelViewSet):
     def list(self, request):
         obj, _ = Cart.objects.get_or_create(owner=request.user, status="N")
         # Remove unavailable items from cart
-        unavailable_items = obj.items.filter(Q(product__active=False) | Q(product__quantity__lte=0))
-        if unavailable_items.exists():
-            unavailable_items.delete()
+        # unavailable_items = obj.items.filter(Q(product__active=False) | Q(product__quantity__lte=0))
+        items = obj.items.all()
+        for unavailable_item in items:
+            if not (unavailable_item.product.is_available and unavailable_item.is_available_quantity):
+                unavailable_item.delete()
         serializer = CartSerializer(obj, context={'request': request})
         return Response(serializer.data)
 

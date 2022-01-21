@@ -140,13 +140,15 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         model = Order
         exclude = ('updated_at', 'shipping_status')
         read_only_fields = ('cart', 'owner',)
-        # fields = '__all__'
-        # read_only_fields = ('owner',)
 
     def create(self, data):
         user = self.context.get('request').user
         cart = user.carts.get(status='N')
         # Validate cart
+        items = cart.items.all()
+        for unavailable_item in items:
+            if not (unavailable_item.product.is_available and unavailable_item.is_available_quantity):
+                unavailable_item.delete()
         if not cart.items.all().exists():
             raise serializers.ValidationError("Cart must not be empty")
         # Update products quantity & CartItem price
