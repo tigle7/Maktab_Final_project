@@ -28,19 +28,24 @@
     <nav class="w3-sidebar bg-dark text-white w3-collapse " style="z-index:3;width:300px;" id="mySidebar"><br>
         <div class="w3-container w3-row">
             <div class="w3-col s4">
+                <a href="{% url 'profile' %}">
                 {% if user.image %}
                 <img src= {{ user.image.url }} class="w3-circle w3-margin-right" style="width:66px; height:66px;">
                 {% else %}
                 <img src="{% static  'images/userprofle.png' %}" class="w3-circle w3-margin-right" style="width:60px">
                 {% endif %}
+                </a>
             </div>
             <div class="w3-col s8 w3-bar">
-                <span><strong>
+                <span > <a class="text-white" href="{% url 'profile' %}" >
+                    <strong >
                     {% if request.user.first_name  or request.user.last_name %}
                     {{ request.user.first_name }} {{ request.user.last_name }}
                     {% else %}
                     {{ request.user.username }}
-                    {% endif %}</strong>
+                    {% endif %}
+                    </strong>
+                    </a>
                 </span><br>
 
             </div>

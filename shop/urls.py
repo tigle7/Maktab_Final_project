@@ -4,11 +4,14 @@ from shop.views.product_view import ProductCreateView
 from shop.views.shop_view import *
 from shop.views.product_view import *
 from shop.views.category_view import *
+from shop.views.profile_view import *
 
 # app_name = 'shop'
 
 urlpatterns = [
     path('', ShopListView.as_view(), name='shop_dashboard'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('edit-profile/', ProfileUpdateView.as_view(), name='update_profile'),
     path('<slug:slug>', ShopDetailView.as_view(), name='shop_detail'),
     path('<slug:slug>/add-product', ProductCreateView.as_view(), name='create_product'),
     path('create-shop/', ShopCreateView.as_view(), name='create_shop'),

@@ -1,6 +1,7 @@
+import imp
 from django import forms
 from .models import *
-
+from user.models import CustomUser
 
 class ShopForm(forms.ModelForm):
     class Meta:
@@ -28,6 +29,9 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['title', 'parent']
 
+class ProfileForm(forms.ModelForm):
 
-class TestForm(forms.Form):
-    title = forms.CharField(required=False)
+    class Meta:
+        model = CustomUser
+        fields=["username" , "email" , "phone_number" , "image" , "address" ,"city"]
+

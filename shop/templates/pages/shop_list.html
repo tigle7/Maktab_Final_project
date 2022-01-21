@@ -11,6 +11,7 @@
             <th>Name</th>
             <th>Type</th>
             <th>Status</th>
+            <th class="text-center">Products</th>
             <th class="text-center">Created</th>
             <th class="text-center">Updated</th>
             <th class="text-center">Actions</th>
@@ -23,6 +24,7 @@
                 <span class="badge badge-success">Active</span> {% else %}
                 <span class="badge badge-warning">Pending</span> {% endif %}
             </td>
+            <td class="text-center">{{shop.product_count}}</td>
             <td class="text-center">{{ shop.created_at|date:'Y-m-d H:i' }}</td>
             <td class="text-center">{{ shop.updated_at|date:'Y-m-d H:i' }}</td>
             <td class="text-center">
@@ -46,4 +48,4 @@
     <br>
     <a href="{% url 'create_shop' %}" class="btn btn-primary ">New Shop  <i class="fa fa-arrow-right"></i></a>
 </div>
-<hr> {% endblock dashbord %}
+{% endblock dashbord %}

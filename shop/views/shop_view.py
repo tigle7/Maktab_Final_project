@@ -13,6 +13,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.db.models import Count
+
 
 class ShopListView(LoginRequiredMixin, ListView):
     model = Shop
@@ -20,7 +22,7 @@ class ShopListView(LoginRequiredMixin, ListView):
     context_object_name = 'shops'
 
     def get_queryset(self):
-        return Shop.confirmed.filter(owner=self.request.user).order_by('-created_at')
+        return Shop.confirmed.filter(owner=self.request.user).annotate(product_count=Count('product_shop')).order_by('-created_at')
 
 
 class ShopCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

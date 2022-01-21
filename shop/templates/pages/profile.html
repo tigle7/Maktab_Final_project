@@ -1,0 +1,180 @@
+
+{% extends 'shop_base.html' %} {% block dashbord %} {% load crispy_forms_tags %}
+<!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2"><i class=" fa fa-user "></i> PROFILE </div>
+</header>
+
+<div class="container mt-5 bootstrap snippets bootdey">
+<div class="panel-body inf-content border-bottom">
+    <div class="row">
+        <div class="col-md-5 ">
+            {% if user.image %}
+            
+            <img alt="" style="width:600px;" title="" class="img-circle img-thumbnail isTooltip" src= {{ user.image.url }} >
+            {% else %} 
+            <img alt="" style="width:600px;" title="" class="img-circle img-thumbnail isTooltip" src="https://bootdey.com/img/Content/avatar/avatar7.png" data-original-title="Usuario"> 
+        {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="table-responsive  ">
+            <table class="table table-user-information">
+                <tbody>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-asterisk text-primary"></span>
+                                Identificacion                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                            {{user.id}}
+                        </td>
+                    </tr>
+                    <tr>    
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-user  text-primary"></span>    
+                                Name                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.first_name %}
+                        {{ user.first_name }}     
+                        {% else %}
+                        Not Set
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-cloud text-primary"></span>  
+                                Lastname                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.last_name %}
+                        {{ user.last_name }}     
+                        {% else %}
+                        Not Set
+                        {% endif %}  
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-bookmark text-primary"></span> 
+                                Username                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                            {{user.username}} 
+                        </td>
+                    </tr>
+
+
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-eye-open text-primary"></span> 
+                                Role                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.is_seller %}
+                            Seller
+                        {% else %}
+                            Pending
+                        {% endif %}
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-envelope text-primary"></span> 
+                                Email                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                            {{user.email}}
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-calendar text-primary"></span>
+                                Phone Number                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.last_name %}
+                        {{user.phone_number}}
+                        {% else %}
+                        Not Set
+                        {% endif %}  
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-cloud text-primary"></span>  
+                                City
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.city %}
+                        {{ user.city }}     
+                        {% else %}
+                        Not Set
+                        {% endif %}  
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-cloud text-primary"></span>  
+                                Address
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                        {% if user.address %}
+                        {{ user.address }}  
+                        {% else %}
+                        Not Set
+                        {% endif %}  
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-calendar text-primary"></span>
+                                Joined                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                            {{ user.date_joined }}
+                        </td>
+                    </tr>
+                    <tr>        
+                        <td>
+                            <strong>
+                                <span class="glyphicon glyphicon-calendar text-primary"></span>
+                                Last Login                                                
+                            </strong>
+                        </td>
+                        <td class="text-primary">
+                             {{user.last_login}}
+                        </td>
+                    </tr>
+                                                        
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Edit Profile  <i class="fa fa-arrow-right"></i></a>
+</div>
+
+ {% endblock dashbord %}

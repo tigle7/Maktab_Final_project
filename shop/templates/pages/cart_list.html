@@ -20,9 +20,8 @@
     {% if carts %}
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
       <tr>
-        <th>Shop</th>
         <th>Byuer</th>
-        <th>Status</th>
+        <th>Paid</th>
         <th>Items</th>
         <th>Price</th>
         <th class="text-center">Created</th>
@@ -30,9 +29,11 @@
       </tr>
       {% for cart in carts %}
       <tr>
-        <td>{{cart.shop}}</td>
         <td>{{cart.owner}}</td>
-        <td>{{cart.status}}</td>
+        <td>{% if cart.status == 'P' %}
+                <span class="badge badge-success">OK</span> {% else %}
+                <span class="badge badge-warning">NO</span> {% endif %}
+        </td>
         <td>{{cart.items_count}}</td>
         <td>{{cart.total_price}}</td>
         <td class="text-center">{{cart.created_at|date:'Y-m-d H:i'}}</td>
@@ -52,8 +53,4 @@
     </div>
     {% endif %}
   </div>
-  <hr>
-  
-
-
   {% endblock dashbord %}

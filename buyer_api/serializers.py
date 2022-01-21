@@ -165,6 +165,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         return order
 
 class OrderListSerializer(serializers.ModelSerializer):
+    
     total_price = serializers.SerializerMethodField()
     items_count = serializers.SerializerMethodField()
 
