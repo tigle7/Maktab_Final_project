@@ -1,4 +1,5 @@
 from itertools import product
+from unicodedata import category
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
@@ -8,8 +9,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.db.models import F
 from rest_framework import serializers
 from shop.models import *
+from user.models import CustomUser
 
-User = get_user_model()
 
 
 class ShopSerializer(serializers.ModelSerializer):
@@ -34,9 +35,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
     is_available = serializers.SerializerMethodField()
     image = serializers.ImageField()
+    shop = ShopSerializer()
+    category = ShopCategorySerializer()
 
     class Meta:
         model = Product
+        # depth = 1
         exclude = ('active', 'updated_at', 'owner', )
         extra_kwargs = {
             'slug': {'read_only': True},
@@ -47,7 +51,6 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
 
     image = serializers.ImageField()
-
     is_in_cart = serializers.SerializerMethodField()
     discount_percent = serializers.SerializerMethodField()
 
@@ -182,18 +185,13 @@ class OrderListSerializer(serializers.ModelSerializer):
     def get_items_count(self, obj):
         return obj.cart.items.all().count()
 
-# class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
 
-#     image = serializers.ImageField()
+    image = serializers.ImageField()
 
-#     class Meta:
-#         model = User
-#         fields = ["customer_username", "country", "state",
-#                   "city", "address", "post_code", "custom_user", "image"]
-#         related_fields = ["custom_user"]
-#         extra_kwargs = {
-#             'custom_user': {'read_only': True},
-#         }
+    class Meta:
+        model = CustomUser
+        fields=["username" , "email" , "phone_number" , "image" , "address" ,"city"]
 
     # def update(self, instance, validated_data):
     #     # related object available

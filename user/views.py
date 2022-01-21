@@ -11,6 +11,7 @@ from django.views.generic import CreateView
 from .serializers import RegisterSerializer
 from rest_framework import generics, permissions
 from django.contrib.auth import authenticate, login, logout
+from rest_framework import parsers
 
 
 User = get_user_model()
@@ -68,8 +69,9 @@ class Register(CreateView):
     success_url = "/dashboard/"
 
 class ApiRegisterView(generics.CreateAPIView):
+
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = RegisterSerializer
-
+    parser_classes = (parsers.FormParser,)
     

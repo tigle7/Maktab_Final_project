@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import parsers, renderers
 from django.db.models import Q
-# Create your views here.
+from user.models import CustomUser
 
 User = get_user_model()
 
@@ -50,21 +50,10 @@ class ShopProductListView(ListAPIView):
         queryset = Product.objects.filter(shop=shop)
         return queryset
 
-class ShopProductDetailView(RetrieveUpdateAPIView):
-
-    # parser_classes = (parsers.MultiPartParser)
+class ProductDetailView(RetrieveAPIView):
     model = Product
     queryset = Product.objects.all()
-    http_method_names = ['put', 'get']
     serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    # throttle_classes = ()
-    # permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
-    renderer_classes = (renderers.JSONRenderer,)
-
-    def get_object(self):
-        return get_object_or_404(Product, slug=self.kwargs['slug'])
 
 class CartView(ModelViewSet):
 
@@ -101,24 +90,14 @@ class OrderView(ListCreateAPIView):
             return CreateOrderSerializer
         return OrderListSerializer
 
-# class CreateCustomerProfileView(CreateAPIView):
-#     parser_classes = (MultiPartParser, FormParser)
-#     model = Customer
-#     permission_classes = [
-#         permissions.IsAuthenticated  # Or anon users can't register
-#     ]
-#     serializer_class = ProfileSerializer
 
+class CustomerProfilelView(RetrieveUpdateAPIView):
+    http_method_names = ['put', 'get']
+    parser_classes = (parsers.MultiPartParser, parsers.FormParser)
+    model = CustomUser
+    queryset = CustomUser.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
 
-# class CustomerProfileUpdateDetailٰView(RetrieveUpdateAPIView):
-#     http_method_names = ['put', 'get']
-#     parser_classes = (MultiPartParser, FormParser)
-#     model = Customer
-#     queryset = Customer.objects.all()
-#     serializer_class = ProfileSerializer
-#     permission_classes = [
-#         permissions.IsAuthenticated  # Or anon users can't register
-#     ]
-
-#     def get_object(self):
-#         return get_object_or_404(Customer, custom_user_id=self.request.user.id)
+    def get_object(self):
+        return  get_object_or_404(CustomUser, id=self.request.user.id)

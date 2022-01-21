@@ -43,6 +43,6 @@ urlpatterns = [
     path('dashboard/', include('shop.urls')),
     path('blog/', include('blog.urls')),
     path('', include('user.urls')),
-    path('api/', include('buyer_api.urls'))
+    path('api/v1/', include('buyer_api.urls'))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
