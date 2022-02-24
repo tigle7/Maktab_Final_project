@@ -48,7 +48,7 @@ class Login(LoginView):
                 if user is not None:
                     login(request, user)
                     messages.success(request, f'Welcome {user}')
-                    return redirect(reverse('shop_dashboard'))
+                    return redirect(reverse('shop_list'))
                 else:
                     messages.warning(request, f'User or password is wrong !')
                     return redirect(reverse('login'))
@@ -61,7 +61,7 @@ class Login(LoginView):
 
     def get_success_url(self):
         user = self.request.user
-        return reverse('shop_dashboard',)
+        return reverse('shop_list',)
 
 class Register(CreateView):
     form_class = UserRegisterForm

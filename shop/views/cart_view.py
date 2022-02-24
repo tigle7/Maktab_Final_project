@@ -1,3 +1,4 @@
+from unicodedata import category
 from shop.models import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
@@ -20,7 +21,21 @@ class CartListView(LoginRequiredMixin, FilterView):
     filterset_class = CartFilter
 
     def get_queryset(self):
-        return Cart.objects.filter(items__product__owner=self.request.user).distinct()
+        carts = Cart.objects.filter(items__product__owner=self.request.user).distinct()
+        print(carts)
+        each_seller_cart = {}
+        for cart in carts:
+            seller_total_price = 0
+            for shop, total_price in cart.each_shop_total_price.items():
+                if shop.owner == self.request.user:
+                    seller_total_price += total_price
+            each_seller_cart[cart] = seller_total_price
+            # print(seller_total_price)
+        print (each_seller_cart)
+
+
+            # print (cart.each_shop_total_price)
+        return carts
     
 
 class CartDetailView(LoginRequiredMixin, ListView):
@@ -32,4 +47,11 @@ class CartDetailView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['cart']= Cart.objects.get(id=self.kwargs['cart_id'])
         context['cart_items'] = CartItem.objects.filter(cart__id=self.kwargs['cart_id'], product__owner=self.request.user)
+
+        # items = CartItem.objects.filter(cart__id=self.kwargs['cart_id'], product__owner=self.request.user)
+        # total = 0
+        # for item in items:
+        #     total += item.total_price
+
+
         return context

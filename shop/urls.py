@@ -9,7 +9,8 @@ from shop.views.profile_view import *
 # app_name = 'shop'
 
 urlpatterns = [
-    path('', ShopListView.as_view(), name='shop_dashboard'),
+    path('', DashboardView.as_view(), name='dashboard'),
+    path('shops/', ShopListView.as_view(), name='shop_list'),
     path('profile/', ProfileView.as_view(), name='profile'),
     path('edit-profile/', ProfileUpdateView.as_view(), name='update_profile'),
     path('<slug:slug>', ShopDetailView.as_view(), name='shop_detail'),

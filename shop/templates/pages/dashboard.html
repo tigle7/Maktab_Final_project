@@ -1,0 +1,41 @@
+{% extends 'shop_base.html' %} {% block dashbord %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> {% endcomment %}
+
+
+<!-- Header -->
+<header class="w3-container" style="padding-top:22px">
+    <div class="border-bottom h2 "><i class="fa fa-dashboard"></i> DASHBOARD</div>
+</header>
+
+<div class="container mt-3">
+
+<canvas id="chart" ></canvas>
+
+<script>
+let ctx = document.getElementById("chart").getContext("2d");
+
+let chart = new Chart(ctx, {
+  type: "bar",
+  data: {
+     labels: [{% for shop in shop_total_sell.keys %} '{{shop}}', {% endfor %}],
+     datasets: [
+        { 
+          label: "Total sales",
+          backgroundColor: "#79AEC8",
+          borderColor: "#417690",
+          data: [{% for total_sales in shop_total_sell.values  %} '{{total_sales}}', {% endfor %}]
+        }
+     ]
+  },
+  options: {
+     title: {
+        text: "Total Sales of each Shop",
+        display: true
+     }
+  }
+});
+
+</script>
+{% endblock dashbord %}

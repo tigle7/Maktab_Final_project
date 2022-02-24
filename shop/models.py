@@ -263,7 +263,7 @@ class CartItem(GeneralModel):
     def total_price(self):
         if self.cart.status == 'N':
             return self.product.final_price * self.quantity
-        return self.price * self.quantity
+        return self.price
 
 
 class Cart(GeneralModel):
@@ -322,8 +322,17 @@ class Cart(GeneralModel):
     def items_count(self):
         return self.items.all().count()
 
-    class Meta:
-        ordering = ('-created_at',)
+    @property
+    def each_shop_total_price(self):
+        dict = {}
+        for item in self.items.all():
+            shop = item.shop
+            if shop in dict:
+                dict[shop] += item.total_price
+            else:
+                dict[shop] = item.total_price
+        return dict
+
 
 
 class Order(GeneralModel):

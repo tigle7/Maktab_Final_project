@@ -12,7 +12,6 @@ from shop.models import *
 from user.models import CustomUser
 
 
-
 class ShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
@@ -157,7 +156,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         # Update products quantity & CartItem price
         for item in cart.items.all():
             Product.objects.filter(id=item.product.id).update(quantity=F('quantity') - item.quantity)
-            item.price = item.product.final_price
+            item.price = item.product.final_price * item.quantity
             item.save()
         cart.status = 'P'
         cart.save()

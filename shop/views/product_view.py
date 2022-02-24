@@ -37,7 +37,7 @@ class ProductCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         if shop.status == 'P':
             messages.warning(
                 self.request, "You can't add product to shop with pending status")
-            return redirect('shop_dashboard')
+            return redirect('shop_list')
         return super().form_valid(form)
 
     def get_form_kwargs(self):

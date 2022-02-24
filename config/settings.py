@@ -171,7 +171,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # LOGIN_REDIRECT_URL = 'index'
 
 LOGIN_URL = 'login'
-# LOGIN_REDIRECT_URL = 'shop_dashboard'
+# LOGIN_REDIRECT_URL = 'shop_list'
 
 
 SIMPLE_JWT = {

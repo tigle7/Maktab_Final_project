@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 
 class ShopListView(LoginRequiredMixin, ListView):
@@ -37,11 +37,11 @@ class ShopCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         if not self.request.user.is_seller:
             messages.warning(
                     self.request, f"Dear {self.request.user.username} your account not verified yet")
-            return redirect('shop_dashboard')
+            return redirect('shop_list')
         if pending_shop_count:
             messages.warning(
                     self.request, f"You already have {pending_shop_count} Shop with pending status")
-            return redirect('shop_dashboard')
+            return redirect('shop_list')
         # print(pending_shop_count)
         # form.instance.image = self.request.FILES['image']
         return super().form_valid(form)
@@ -56,7 +56,7 @@ class ShopUpdateView(LoginRequiredMixin, UpdateView):
     model = Shop
     fields = ['title', 'type', 'image',]
     template_name = "forms/shop_form.html"
-    success_url = "/dashboard/"
+    success_url = "/dashboard/shops/"
 
     def form_valid(self, form):
         form.instance.status = "P"
@@ -71,7 +71,7 @@ class ShopDeleteView(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         self.object.status = 'D'
         self.object.save()
-        return redirect(reverse('shop_dashboard'))
+        return redirect(reverse('shop_list'))
 
 class ShopDetailView(LoginRequiredMixin, DetailView):
     model = Shop
@@ -84,12 +84,26 @@ class ShopDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class Dashboard(LoginRequiredMixin, TemplateView):
-    template_name = 'dashboard/dashboard.html'
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'pages/dashboard.html'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(Dashboard, self).get_context_data(**kwargs)
-        context['category'] = Category.objects.all()
-        context['shop'] = Shop.objects.all()
-        context['user'] = User.objects.all()
+
+        carts = Cart.objects.filter(items__product__owner=self.request.user, status='P').distinct()
+        # print(carts)
+        shop_total_sell = {}
+        shop_totall_sell = 0
+        for cart in carts:
+            for shop, total_price in cart.each_shop_total_price.items():
+                if shop.owner == self.request.user:
+                    # shop_totall_sell += total_price
+                    if shop in shop_total_sell:
+                        shop_total_sell[shop.title] += total_price
+                    else:
+                        shop_total_sell[shop.title] = total_price
+            # shop_total_sell[cart] = shop_totall_sell
+            # print(shop_totall_sell)
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context['shops'] = Shop.confirmed.filter(owner=self.request.user).annotate(total_sell=Sum('cart__items__price')).order_by('-created_at')
+        context['shop_total_sell'] = shop_total_sell
         return context

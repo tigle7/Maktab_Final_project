@@ -19,7 +19,7 @@ User = get_user_model()
 class ShopListView(ListAPIView):
     
     # permission_classes = [IsAuthenticated]
-    queryset = Shop.confirmed.all()
+    queryset = Shop.objects.filter(status='C')
     serializer_class = ShopSerializer
     filterset_class = ShopFilter
 
